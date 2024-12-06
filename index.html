@@ -32,6 +32,11 @@
       font-size: 14px;
       color: #666;
     }
+
+    #loadingMessage {
+      font-size: 16px;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -91,7 +96,7 @@
             // Create and append the value (description)
             const descriptionElement = document.createElement('div');
             descriptionElement.classList.add('data-description');
-            descriptionElement.innerText = value; // Set the value as description
+            descriptionElement.innerText = typeof value === 'object' ? JSON.stringify(value) : value; // Check if value is an object
             sectionDiv.appendChild(descriptionElement);
 
             // Append the section to the main container
