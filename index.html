@@ -33,6 +33,12 @@
       color: #666;
     }
 
+    #lastUpdated {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
     #loadingMessage {
       font-size: 16px;
       color: #888;
@@ -42,11 +48,11 @@
 <body>
   <div id="dataContainer">
     <h2>Fetched Data</h2>
+    <p id="lastUpdated">Last Updated: Loading...</p>
     <p id="loadingMessage">Loading data, please wait...</p>
   </div>
 
   <script type="module">
-    // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
@@ -66,20 +72,44 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
+    // Helper function to format "Last Updated" time
+    function formatTimeDiff(timestamp) {
+      const now = Date.now();
+      const diffInSeconds = Math.floor((now - timestamp) / 1000);
+
+      if (diffInSeconds < 60) {
+        return `${diffInSeconds} seconds ago`;
+      } else if (diffInSeconds < 3600) {
+        return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+      } else if (diffInSeconds < 86400) {
+        return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+      } else {
+        return `${Math.floor(diffInSeconds / 86400)} days ago`;
+      }
+    }
+
     // Fetch Data Function
     async function fetchData() {
-      const updatesRef = ref(database, '/data'); // Point to '/data' path
+      const updatesRef = ref(database, '/'); // Root path
       try {
         const snapshot = await get(updatesRef);
         const data = snapshot.val();
 
-        if (data) {
+        if (data && data.data) {
           console.log("Fetched data:", data);
+
+          // Hide loading message
           document.getElementById('loadingMessage').style.display = 'none';
 
-          // Iterate over all key-value pairs
-          Object.keys(data).forEach((key) => {
-            const valueObj = data[key];
+          // Show last updated time
+          if (data.lastUpdated) {
+            const lastUpdatedTime = formatTimeDiff(data.lastUpdated);
+            document.getElementById('lastUpdated').innerText = `Last Updated: ${lastUpdatedTime}`;
+          }
+
+          // Iterate over data
+          Object.keys(data.data).forEach((key) => {
+            const valueObj = data.data[key];
             const description = valueObj?.value || "No Description Available";
 
             // Create a new div for each key-value pair
@@ -95,7 +125,7 @@
             // Create and append the value (description)
             const descriptionElement = document.createElement('div');
             descriptionElement.classList.add('data-description');
-            descriptionElement.innerHTML = description; // Set the value as description (supports HTML)
+            descriptionElement.innerHTML = description; // Set the value as description
             sectionDiv.appendChild(descriptionElement);
 
             // Append the section to the main container
