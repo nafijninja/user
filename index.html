@@ -8,17 +8,37 @@
     #dataContainer {
       padding: 20px;
       border: 1px solid #ddd;
-      width: 300px;
+      width: 90%;
+      max-width: 600px;
       margin: 20px auto;
-      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .data-section {
+      border: 1px solid #ccc;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
+    .data-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .data-description {
+      font-size: 14px;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <!-- Data Display Div -->
+  <!-- Main Data Container -->
   <div id="dataContainer">
-    <h2 id="title">Loading...</h2>
-    <p id="description">Please wait while data is being fetched.</p>
+    <h2>Fetched Data</h2>
+    <p id="loadingMessage">Loading data, please wait...</p>
   </div>
 
   <!-- Firebase SDK (v9+ modular import) -->
@@ -43,30 +63,47 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    // Fetch Data Function with root path ('/')
+    // Fetch Data Function
     async function fetchData() {
-      const updatesRef = ref(database, '/');  // Root path, because all data is here
+      const updatesRef = ref(database, '/'); // Root path
       try {
-        const snapshot = await get(updatesRef);  // Get data from the root
-        const data = snapshot.val();  // Get the data
+        const snapshot = await get(updatesRef); // Get data from Firebase
+        const data = snapshot.val(); // Extract data
 
         if (data) {
-          console.log("Fetched data:", data);  // Check if data is fetched
+          console.log("Fetched data:", data); // Log fetched data for debugging
+          document.getElementById('loadingMessage').style.display = 'none'; // Hide loading message
 
-          // Assuming your data is an object with key-value pairs
-          const firstKey = Object.keys(data)[0];  // Get the first key
-          const firstValue = data[firstKey];      // Get the corresponding value
+          // Iterate over all key-value pairs
+          Object.keys(data).forEach((key) => {
+            const value = data[key]; // Get the value for each key
 
-          // Update the content in the div
-          document.getElementById('title').innerText = firstKey || 'No Title Available';
-          document.getElementById('description').innerText = firstValue || 'No Description Available';
+            // Create a new div for each key-value pair
+            const sectionDiv = document.createElement('div');
+            sectionDiv.classList.add('data-section');
+
+            // Create and append the key (title)
+            const titleElement = document.createElement('div');
+            titleElement.classList.add('data-title');
+            titleElement.innerText = key; // Set the key as title
+            sectionDiv.appendChild(titleElement);
+
+            // Create and append the value (description)
+            const descriptionElement = document.createElement('div');
+            descriptionElement.classList.add('data-description');
+            descriptionElement.innerText = value; // Set the value as description
+            sectionDiv.appendChild(descriptionElement);
+
+            // Append the section to the main container
+            document.getElementById('dataContainer').appendChild(sectionDiv);
+          });
         } else {
           console.log("No data available");
-          document.getElementById('title').innerText = 'No Data Available';
-          document.getElementById('description').innerText = 'Please try again later.';
+          document.getElementById('loadingMessage').innerText = 'No data available.';
         }
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error("Error fetching data:", error);
+        document.getElementById('loadingMessage').innerText = 'Error fetching data.';
       }
     }
 
