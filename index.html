@@ -96,7 +96,7 @@
             // Create and append the value (description)
             const descriptionElement = document.createElement('div');
             descriptionElement.classList.add('data-description');
-            descriptionElement.innerText = typeof value === 'object' ? JSON.stringify(value) : value; // Check if value is an object
+            descriptionElement.innerText = value; // Set the value as description
             sectionDiv.appendChild(descriptionElement);
 
             // Append the section to the main container
