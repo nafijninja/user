@@ -4,11 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Panel</title>
+  <style>
+    #dataContainer {
+      padding: 20px;
+      border: 1px solid #ddd;
+      width: 300px;
+      margin: 20px auto;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h1 id="title">Loading...</h1>
-  <p id="description">Please wait while data is being fetched.</p>
-  <p id="lastUpdated">Last updated: Loading...</p>
+  <!-- Data Display Div -->
+  <div id="dataContainer">
+    <h2 id="title">Loading...</h2>
+    <p id="description">Please wait while data is being fetched.</p>
+    <p id="lastUpdated">Last updated: Loading...</p>
+  </div>
 
   <!-- Firebase SDK (v9+ modular import) -->
   <script type="module">
@@ -42,9 +54,12 @@
         if (data) {
           console.log("Fetched data:", data);  // Check if data is fetched
 
-          // Display data on the page
-          document.getElementById('title').innerText = data.title;
-          document.getElementById('description').innerText = data.description;
+          // Update the content in the div
+          const title = data.title || 'No Title Available';  // Default if no title
+          const description = data.description || 'No Description Available';  // Default if no description
+          
+          document.getElementById('title').innerText = title;
+          document.getElementById('description').innerText = description;
           
           if (data.timestamp) {
             const lastUpdated = new Date(data.timestamp * 1000);  // Convert timestamp to milliseconds
