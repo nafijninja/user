@@ -3,15 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Panel</title>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+    <title>Authentication Example</title>
 </head>
 <body>
-    <h1>User Panel</h1>
-    <h3>Latest Data:</h3>
-    <div id="userData">Loading...</div>
+    <h1>Firebase Authentication Example</h1>
 
-    <script src="user.js"></script>
+    <!-- Sign Up Section -->
+    <h2>Sign Up</h2>
+    <input type="email" id="signupEmail" placeholder="Enter email">
+    <input type="password" id="signupPassword" placeholder="Enter password">
+    <button id="signupButton">Sign Up</button>
+    <p id="signupMessage"></p>
+
+    <!-- Login Section -->
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Enter email">
+    <input type="password" id="loginPassword" placeholder="Enter password">
+    <button id="loginButton">Login</button>
+    <p id="loginMessage"></p>
+
+    <!-- Logout Section -->
+    <button id="logoutButton" style="display: none;">Logout</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8u8_i2rD6HEvU8Pi4CaZC916ny63ec3I",
+            authDomain: "website-demo-24.firebaseapp.com",
+            databaseURL: "https://website-demo-24-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "website-demo-24",
+            storageBucket: "website-demo-24.firebasestorage.app",
+            messagingSenderId: "346117554665",
+            appId: "1:346117554665:web:0c1536c7176517c8a4cb78",
+            measurementId: "G-1GSKL8WVQJ"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Sign Up Function
+        document.getElementById("signupButton").addEventListener("click", function() {
+            const email = document.getElementById("signupEmail").value;
+            const password = document.getElementById("signupPassword").value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    document.getElementById("signupMessage").textContent = "✅ Sign up successful!";
+                    document.getElementById("signupMessage").style.color = "green";
+                })
+                .catch((error) => {
+                    document.getElementById("signupMessage").textContent = "❌ Error: " + error.message;
+                    document.getElementById("signupMessage").style.color = "red";
+                });
+        });
+
+        // Login Function
+        document.getElementById("loginButton").addEventListener("click", function() {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    document.getElementById("loginMessage").textContent = "✅ Login successful!";
+                    document.getElementById("loginMessage").style.color = "green";
+                    document.getElementById("logoutButton").style.display = "block";
+                })
+                .catch((error) => {
+                    document.getElementById("loginMessage").textContent = "❌ Error: " + error.message;
+                    document.getElementById("loginMessage").style.color = "red";
+                });
+        });
+
+        // Logout Function
+        document.getElementById("logoutButton").addEventListener("click", function() {
+            auth.signOut()
+                .then(() => {
+                    document.getElementById("loginMessage").textContent = "✅ Logged out successfully!";
+                    document.getElementById("loginMessage").style.color = "green";
+                    document.getElementById("logoutButton").style.display = "none";
+                })
+                .catch((error) => {
+                    document.getElementById("loginMessage").textContent = "❌ Error: " + error.message;
+                    document.getElementById("loginMessage").style.color = "red";
+                });
+        });
+    </script>
 </body>
 </html>
