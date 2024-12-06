@@ -40,13 +40,11 @@
   </style>
 </head>
 <body>
-  <!-- Main Data Container -->
   <div id="dataContainer">
     <h2>Fetched Data</h2>
     <p id="loadingMessage">Loading data, please wait...</p>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
@@ -70,20 +68,18 @@
 
     // Fetch Data Function
     async function fetchData() {
-      const updatesRef = ref(database, '/'); // Root path
+      const updatesRef = ref(database, '/data'); // Point to '/data' path
       try {
-        const snapshot = await get(updatesRef); // Get data from Firebase
-        const data = snapshot.val(); // Extract data
+        const snapshot = await get(updatesRef);
+        const data = snapshot.val();
 
         if (data) {
-          console.log("Fetched data:", data); // Log fetched data
-          document.getElementById('loadingMessage').style.display = 'none'; // Hide loading message
+          console.log("Fetched data:", data);
+          document.getElementById('loadingMessage').style.display = 'none';
 
           // Iterate over all key-value pairs
           Object.keys(data).forEach((key) => {
-            const valueObj = data[key]; // Get the value object for each key
-            
-            // Check if valueObj is an object with 'value' property
+            const valueObj = data[key];
             const description = valueObj?.value || "No Description Available";
 
             // Create a new div for each key-value pair
@@ -99,7 +95,7 @@
             // Create and append the value (description)
             const descriptionElement = document.createElement('div');
             descriptionElement.classList.add('data-description');
-            descriptionElement.innerText = description; // Set the value as description
+            descriptionElement.innerHTML = description; // Set the value as description (supports HTML)
             sectionDiv.appendChild(descriptionElement);
 
             // Append the section to the main container
