@@ -14,7 +14,7 @@
   <script type="module">
     // Import Firebase functions
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
     // Firebase Configuration
     const firebaseConfig = {
@@ -32,29 +32,36 @@
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
 
-    // Fetch Data Function
-    function fetchData() {
-      const updatesRef = ref(database, 'updates/');
-      onValue(updatesRef, (snapshot) => {
-        const data = snapshot.val();
-        console.log(data); // Add this line to check if data is fetched correctly
+    // Fetch Data Function with root path ('/')
+    async function fetchData() {
+      const updatesRef = ref(database, '/');  // Root path, because all data is here
+      try {
+        const snapshot = await get(updatesRef);  // Get data from the root
+        const data = snapshot.val();  // Get the data
+
         if (data) {
+          console.log("Fetched data:", data);  // Check if data is fetched
+
+          // Display data on the page
           document.getElementById('title').innerText = data.title;
           document.getElementById('description').innerText = data.description;
           
           if (data.timestamp) {
-            const lastUpdated = new Date(data.timestamp * 1000);  // Convert to milliseconds
+            const lastUpdated = new Date(data.timestamp * 1000);  // Convert timestamp to milliseconds
             const formattedDate = lastUpdated.toLocaleString();  // Format date
             document.getElementById('lastUpdated').innerText = `Last updated: ${formattedDate}`;
           } else {
             document.getElementById('lastUpdated').innerText = 'Last updated: N/A';
           }
         } else {
+          console.log("No data available");
           document.getElementById('title').innerText = 'No Data Available';
           document.getElementById('description').innerText = 'Please try again later.';
           document.getElementById('lastUpdated').innerText = 'Last updated: N/A';
         }
-      });
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
     }
 
     // Call fetchData on page load
