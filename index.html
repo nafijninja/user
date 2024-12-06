@@ -81,26 +81,28 @@
 
           // Iterate over all key-value pairs
           Object.keys(data).forEach((key) => {
-            const value = data[key]; // Get the value for each key
+            const valueObj = data[key]; // Get the value object for each key
+            
+            if (valueObj && valueObj.value) {
+              // Create a new div for each key-value pair
+              const sectionDiv = document.createElement('div');
+              sectionDiv.classList.add('data-section');
 
-            // Create a new div for each key-value pair
-            const sectionDiv = document.createElement('div');
-            sectionDiv.classList.add('data-section');
+              // Create and append the key (title)
+              const titleElement = document.createElement('div');
+              titleElement.classList.add('data-title');
+              titleElement.innerText = key; // Set the key as title
+              sectionDiv.appendChild(titleElement);
 
-            // Create and append the key (title)
-            const titleElement = document.createElement('div');
-            titleElement.classList.add('data-title');
-            titleElement.innerText = key; // Set the key as title
-            sectionDiv.appendChild(titleElement);
+              // Create and append the value (description)
+              const descriptionElement = document.createElement('div');
+              descriptionElement.classList.add('data-description');
+              descriptionElement.innerText = valueObj.value; // Set the 'value' as description
+              sectionDiv.appendChild(descriptionElement);
 
-            // Create and append the value (description)
-            const descriptionElement = document.createElement('div');
-            descriptionElement.classList.add('data-description');
-            descriptionElement.innerText = value; // Set the value as description
-            sectionDiv.appendChild(descriptionElement);
-
-            // Append the section to the main container
-            document.getElementById('dataContainer').appendChild(sectionDiv);
+              // Append the section to the main container
+              document.getElementById('dataContainer').appendChild(sectionDiv);
+            }
           });
         } else {
           console.log("No data available");
