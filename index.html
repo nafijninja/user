@@ -37,11 +37,11 @@
       const updatesRef = ref(database, 'updates/');
       onValue(updatesRef, (snapshot) => {
         const data = snapshot.val();
+        console.log(data); // Add this line to check if data is fetched correctly
         if (data) {
           document.getElementById('title').innerText = data.title;
           document.getElementById('description').innerText = data.description;
           
-          // Convert timestamp to human-readable date
           if (data.timestamp) {
             const lastUpdated = new Date(data.timestamp * 1000);  // Convert to milliseconds
             const formattedDate = lastUpdated.toLocaleString();  // Format date
