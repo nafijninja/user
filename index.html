@@ -43,6 +43,12 @@
       font-size: 16px;
       color: #888;
     }
+
+    img {
+      max-width: 100%;
+      border: 1px solid #ddd;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -52,7 +58,12 @@
     <p id="loadingMessage">Loading data, please wait...</p>
   </div>
 
+  <!-- Including times.js -->
   <script type="module" src="times.js"></script>
+
+  <!-- Including pic-user.js -->
+  <script type="module" src="pic-user.js"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
@@ -128,6 +139,13 @@
             descriptionElement.classList.add('data-description');
             descriptionElement.innerHTML = description; // Set the value as description
             sectionDiv.appendChild(descriptionElement);
+
+            // Check if image URL exists and display it
+            if (data.data[key]?.imageUrl) {
+              const imgElement = document.createElement('img');
+              imgElement.src = data.data[key].imageUrl;
+              sectionDiv.appendChild(imgElement);
+            }
 
             // Append the section to the main container
             document.getElementById('dataContainer').appendChild(sectionDiv);
