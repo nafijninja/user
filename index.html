@@ -19,7 +19,6 @@
   <div id="dataContainer">
     <h2 id="title">Loading...</h2>
     <p id="description">Please wait while data is being fetched.</p>
-    <p id="lastUpdated">Last updated: Loading...</p>
   </div>
 
   <!-- Firebase SDK (v9+ modular import) -->
@@ -54,25 +53,17 @@
         if (data) {
           console.log("Fetched data:", data);  // Check if data is fetched
 
+          // Assuming your data is an object with key-value pairs
+          const firstKey = Object.keys(data)[0];  // Get the first key
+          const firstValue = data[firstKey];      // Get the corresponding value
+
           // Update the content in the div
-          const title = data.title || 'No Title Available';  // Default if no title
-          const description = data.description || 'No Description Available';  // Default if no description
-          
-          document.getElementById('title').innerText = title;
-          document.getElementById('description').innerText = description;
-          
-          if (data.timestamp) {
-            const lastUpdated = new Date(data.timestamp * 1000);  // Convert timestamp to milliseconds
-            const formattedDate = lastUpdated.toLocaleString();  // Format date
-            document.getElementById('lastUpdated').innerText = `Last updated: ${formattedDate}`;
-          } else {
-            document.getElementById('lastUpdated').innerText = 'Last updated: N/A';
-          }
+          document.getElementById('title').innerText = firstKey || 'No Title Available';
+          document.getElementById('description').innerText = firstValue || 'No Description Available';
         } else {
           console.log("No data available");
           document.getElementById('title').innerText = 'No Data Available';
           document.getElementById('description').innerText = 'Please try again later.';
-          document.getElementById('lastUpdated').innerText = 'Last updated: N/A';
         }
       } catch (error) {
         console.error("Error fetching data: ", error);
