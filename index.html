@@ -50,6 +50,20 @@
       border: 1px solid #ddd;
       margin-top: 10px;
     }
+
+    img:not([src]), img[src=""] {
+      display: none; /* Hide broken images */
+    }
+
+    video {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+
+    audio {
+      margin-top: 10px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -58,12 +72,6 @@
     <p id="lastUpdated">Last Updated: Loading...</p>
     <p id="loadingMessage">Loading data, please wait...</p>
   </div>
-
-  <!-- Including times.js -->
-  <script type="module" src="times.js"></script>
-
-  <!-- Including pic-user.js -->
-  <script type="module" src="pic-user.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
@@ -141,11 +149,30 @@
             descriptionElement.innerHTML = description; // Set the value as description
             sectionDiv.appendChild(descriptionElement);
 
-            // Check if image URL exists and display it
-            if (data.data[key]?.imageUrl) {
+            // Check if image URL exists and is valid before displaying
+            if (valueObj?.imageUrl) {
               const imgElement = document.createElement('img');
-              imgElement.src = data.data[key].imageUrl;
+              imgElement.src = valueObj.imageUrl;
+              imgElement.onerror = () => {
+                imgElement.style.display = "none";
+              };
               sectionDiv.appendChild(imgElement);
+            }
+
+            // Check if video URL exists and display it
+            if (valueObj?.videoUrl) {
+              const videoElement = document.createElement('video');
+              videoElement.controls = true;
+              videoElement.innerHTML = `<source src="${valueObj.videoUrl}" type="video/mp4">Your browser does not support the video tag.`;
+              sectionDiv.appendChild(videoElement);
+            }
+
+            // Check if audio URL exists and display it
+            if (valueObj?.audioUrl) {
+              const audioElement = document.createElement('audio');
+              audioElement.controls = true;
+              audioElement.src = valueObj.audioUrl;
+              sectionDiv.appendChild(audioElement);
             }
 
             // Append the section to the main container
