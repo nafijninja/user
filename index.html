@@ -45,24 +45,14 @@
       color: #888;
     }
 
+    img, video, audio {
+      display: none; /* Default hidden */
+      max-width: 100%;
+      margin-top: 10px;
+    }
+
     img {
-      max-width: 100%;
       border: 1px solid #ddd;
-      margin-top: 10px;
-    }
-
-    img:not([src]), img[src=""] {
-      display: none; /* Hide broken images */
-    }
-
-    video {
-      max-width: 100%;
-      margin-top: 10px;
-    }
-
-    audio {
-      margin-top: 10px;
-      width: 100%;
     }
   </style>
 </head>
@@ -149,28 +139,28 @@
             descriptionElement.innerHTML = description; // Set the value as description
             sectionDiv.appendChild(descriptionElement);
 
-            // Check if image URL exists and is valid before displaying
-            if (valueObj?.imageUrl) {
+            // Check if image URL exists and is valid
+            if (valueObj?.imageUrl && valueObj.imageUrl.startsWith("http")) {
               const imgElement = document.createElement('img');
               imgElement.src = valueObj.imageUrl;
-              imgElement.onerror = () => {
-                imgElement.style.display = "none";
-              };
+              imgElement.style.display = "block"; // Make image visible
               sectionDiv.appendChild(imgElement);
             }
 
-            // Check if video URL exists and display it
-            if (valueObj?.videoUrl) {
+            // Check if video URL exists and is valid
+            if (valueObj?.videoUrl && valueObj.videoUrl.startsWith("http")) {
               const videoElement = document.createElement('video');
               videoElement.controls = true;
+              videoElement.style.display = "block"; // Make video visible
               videoElement.innerHTML = `<source src="${valueObj.videoUrl}" type="video/mp4">Your browser does not support the video tag.`;
               sectionDiv.appendChild(videoElement);
             }
 
-            // Check if audio URL exists and display it
-            if (valueObj?.audioUrl) {
+            // Check if audio URL exists and is valid
+            if (valueObj?.audioUrl && valueObj.audioUrl.startsWith("http")) {
               const audioElement = document.createElement('audio');
               audioElement.controls = true;
+              audioElement.style.display = "block"; // Make audio visible
               audioElement.src = valueObj.audioUrl;
               sectionDiv.appendChild(audioElement);
             }
